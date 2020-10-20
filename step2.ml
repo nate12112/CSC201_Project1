@@ -196,9 +196,6 @@ val rec varITypeSearch = fn([]:TypeMapImp)=>(fn(u:Variable)=>NoDecRep) | (((v,w)
 			(fn(u:Variable)=>if(u=v) then w
 					else
 		 			varITypeSearch(map_tail)(u));
-(*Testing *)
-val var1 = varITypeSearch([]);
-(*val var2 = varITypeSearch([v1,IntRep]);*)
 
 (*step 2.4 *)
 (*TypeMapPlusOne:TypeMap->Declaration->TypeMap *)
@@ -208,40 +205,20 @@ val TypeMapPlusOne = (fn(TMOld:TypeMapImp)=>(fn(v:Variable,IntegerType)=>[(v,Int
 fun DecListToTypeMapImp([])=[] |
 	DecListToTypeMapImp((declist_head::declist_tail):DeclarationList)=TypeMapPlusOne(DecListToTypeMapImp(declist_tail))(declist_head);
 
+(*Testing *)
+val testVariables = DecListToTypeMapImp(declares);
+val result = varITypeSearch(testVariables);
+
+val var1 = varITypeSearch([]);
 
 
-(* Testing *)
+(*step 2.6 *)
+val rec VarNotInDecList = fn([]:DeclarationList)=>(fn(v:Variable)=>true) |
+			((x:Variable,y:Type)::declist_tail)=>(fn(v:Variable)=>VarNotInDecList(declist_tail)(v) andalso (v<>x));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(*step 2.7 *)
+val rec ValidDecList= fn([])=> true |
+	((x:Variable,y:Type)::declist_tail)=>VarNotInDecList(declist_tail)(x) andalso ValidDecList(declist_tail);
 
 
 
